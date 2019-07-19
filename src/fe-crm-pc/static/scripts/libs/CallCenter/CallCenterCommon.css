@@ -1,0 +1,131 @@
+#CallCenter_jianpan {
+    position: absolute;
+    top: 42px;
+    /*left: 0px;*/
+    margin-left: -5px;
+    z-index: 5000;
+    background-color: rgba(36, 41, 48, 0.1);
+    width: 106px;
+    padding-top: 5px;
+    padding-left: 2px;
+    padding-bottom: 2px;
+    cursor: default;
+}
+
+#CallCenter_jianpan .jianpan_ul {
+    width: 110px;
+    padding: 0;
+    margin: 0;
+}
+
+#CallCenter_jianpan .jianpan_icon {
+    width: 31px;
+    height: 31px;
+    background: url(./images/jianpan.png) left top no-repeat;
+    background-position: center 0;
+    background-size: auto auto;
+    margin: 0;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    float: left;
+    list-style-type: none;
+}
+
+#CallCenter_jianpan .jianpan_1 {
+    background-position: 0 0;
+}
+
+#CallCenter_jianpan .jianpan_2 {
+    background-position: -35px 0;
+}
+
+#CallCenter_jianpan .jianpan_3 {
+    background-position: -70px 0;
+}
+
+#CallCenter_jianpan .jianpan_4 {
+    background-position: 0 -35px;
+}
+
+#CallCenter_jianpan .jianpan_5 {
+    background-position: -35px -35px;
+}
+
+#CallCenter_jianpan .jianpan_6 {
+    background-position: -70px -35px;
+}
+
+#CallCenter_jianpan .jianpan_7 {
+    background-position: 0 -70px;
+}
+
+#CallCenter_jianpan .jianpan_8 {
+    background-position: -35px -70px;
+}
+
+#CallCenter_jianpan .jianpan_9 {
+    background-position: -70px -70px;
+}
+
+#CallCenter_jianpan .jianpan_x {
+    background-position: 0 -105px;
+}
+
+#CallCenter_jianpan .jianpan_0 {
+    background-position: -35px -105px;
+}
+
+#CallCenter_jianpan .jianpan_h {
+    background-position: -70px -105px;
+}
+
+#CallCenter_TCBox {
+    margin-left: 170px;
+    clear: both;
+    position: absolute;
+    background-color: #FFF;
+    border: #a2a2a2 solid 1px;
+    top: 42px;
+    padding: 5px;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    height: 500px;
+    overflow-y: scroll;
+    z-index: 999;
+}
+
+.CallCenter_group {
+    padding: 5px;
+    border-bottom: 1px;
+    border-bottom-color: #a2a2a2;
+    border-bottom-style: dashed;
+}
+
+.CallCenter_ul {
+    border-bottom: 1px;
+    border-bottom-color: #a2a2a2;
+    border-bottom-style: solid;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    font-size: 12px;
+}
+
+.CallCenter_ul li {
+    width: 200px;
+    border-bottom: 1px;
+    border-bottom-color: #a2a2a2;
+    border-bottom-style: dashed;
+    padding: 5px 10px 0 10px;
+}
+
+.CallCenter_agent {
+    float: left;
+    margin-left: 10px;
+}
+
+.CallCenter_agentSelected {
+    float: right;
+    cursor: pointer;
+}

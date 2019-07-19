@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jquery-1.7.2.min.js"></script>
+    <script src="CallCenter.js"></script>
+    <script>
+        $(function () {
+            $("body").prepend(CallCenter.draw());
+            $("#draw").click(function () {
+                CallCenter.destory();
+                $("body").prepend(CallCenter.draw());
+                CallCenter.applyLastStyle();
+            })
+            $("#drawAllIcon").click(function () {
+                CallCenter.destory();
+                $("body").prepend(CallCenter.drawAllIcon());
+                CallCenter.applyLastStyle();
+            })
+            $("#login_op").click(function () {
+                CallCenter.opLogin(
+                        $("#operator_id").val(),
+                        $("#password").val(),
+                        $("#company_id").val(),
+                        $("#logintype").val(),
+                        $("#auto").val(),
+                        $("#logingroups").val(),
+                        $("#url_3cs").val(),
+                        $("#clientType").val(),
+                        $("#serverType").val()
+                )
+            });
+            $("#login_sip").click(function () {
+                CallCenter.sipLogin(
+                        $("#sip_id").val(),
+                        $("#sip_pwd").val(),
+                        $("#company_id").val(),
+                        $("#logintype").val(),
+                        $("#auto").val(),
+                        $("#logingroups").val(),
+                        $("#url_3cs").val(),
+                        $("#clientType").val(),
+                        $("#serverType").val()
+                )
+            });
+            $("#open_availablegroup").click(function () {
+                CallCenter.openAvailablegroup();
+                alert('开启');
+            })
+            $("#close_availablegroup").click(function () {
+                CallCenter.closeAvailablegroup();
+                alert('关闭');
+            })
+            $("#idle_but").click(function () {
+                CallCenter.free();
+            })
+            $("#busy_but").click(function () {
+                CallCenter.busy();
+            })
+            $("#callout_but").click(function () {
+                CallCenter.callout($("#callout").val());
+            })
+            $("#cancelmakecall_but").click(function () {
+                CallCenter.cancelmakecall();
+            })
+            $("#logout").click(function () {
+                CallCenter.logout();
+            });
+            $("#monitoragent").click(function () {
+                CallCenter.monitoragent();
+            })
+            $("#transfercall_but").click(function () {
+                CallCenter.transfercall($("#transfer").val());
+            })
+            $("#consult_but").click(function () {
+                CallCenter.agentconsult($("#consult").val());
+            })
+            $("#forceidle_but").click(function () {
+                CallCenter.forceidle($("#forceidle").val());
+            })
+            $("#forcebusy_but").click(function () {
+                CallCenter.forcebusy($("#forcebusy").val());
+            })
+            $("#monitor_but").click(function () {
+                CallCenter.monitor($("#monitor").val());
+            })
+            $("#agentinterceptcall_but").click(function () {
+                CallCenter.agentinterceptcall($("#agentinterceptcall").val());
+            })
+            $("#agentinsert_but").click(function () {
+                CallCenter.agentinsert($("#agentinsert").val());
+            })
+            $("#agentbreak_but").click(function () {
+                CallCenter.agentbreak($("#agentbreak").val());
+            })
+            $("#sendmsg_but").click(function () {
+                CallCenter.sendmsg($("#sendmsg").val());
+            })
+            $("#consultbackbut").click(function () {
+                CallCenter.agentconsultback();
+            })
+            $("#shiftbut").click(function () {
+                CallCenter.agentshift();
+            })
+            $("#tripartitetalkbut").click(function () {
+                CallCenter.tripartitetalk();
+            })
+            $("#mute").click(function () {
+                CallCenter.mute();
+            })
+            $("#unmute").click(function () {
+                CallCenter.unmute();
+            })
+            $("#consulationservice_but").click(function () {
+                CallCenter.consulationservice($("#consulationservice").val());
+            })
+            $("#transferservice_but").click(function () {
+                CallCenter.transferservice($("#transferservice").val());
+            })
+            $("#agentgroups_but").click(function () {
+                CallCenter.agentgroups();
+            })
+            $("#idleagents_but").click(function () {
+                CallCenter.idleagents();
+            })
+            $("#client_log_open").click(function () {
+                CallCenter.openClientLog();
+            })
+            $("#client_log_close").click(function () {
+                CallCenter.closeClientLog();
+            })
+            $("#auto_break").click(function () {
+                if ($(this).is(":checked")) {
+                    $("#console").css("word-break", "break-all");
+                } else {
+                    $("#console").css("word-break", "normal");
+                }
+            })
+            $("#filter_ping").click(function () {
+                checkPingBut();
+            })
+            $("#show_send").click(function () {
+                checkShowSend();
+            })
+            $("#show_recive").click(function () {
+                checkShowRecive();
+            })
+            $("#flashbox").hide();
+            var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight;
+            $("#left_div,#right_div").height(height - 34 - 16);
+
+            $(".login_fs").click(function () {
+                var val = $(this).val();
+                if (val == 1) {
+                    $("#login_fs1").show();
+                    $("#login_fs2").hide();
+                }
+                if (val == 2) {
+                    $("#login_fs1").hide();
+                    $("#login_fs2").show();
+                }
+            })
+        });
+        function checkPingBut() {
+            if ($("#filter_ping").is(":checked")) {
+                $(".ping,.pingack").hide();
+            } else {
+                $(".ping,.pingack").show();
+            }
+        }
+        function checkShowSend() {
+            if ($("#show_send").is(":checked")) {
+                $(".send").show();
+                checkPingBut();
+            } else {
+                $(".send").hide();
+                checkPingBut();
+            }
+        }
+        function checkShowRecive() {
+            if ($("#show_recive").is(":checked")) {
+                $(".recive").show();
+                checkPingBut();
+            } else {
+                $(".recive").hide();
+                checkPingBut();
+            }
+        }
+        function onmessage_event(json, from) {
+            var date = new Date();
+            var content = $("<div></div>");
+            if (from == "send") {
+                content.html("[发送]");
+                content.css("color", "green");
+                content.addClass("send");
+            } else {
+                content.html("[接收]");
+                content.css("color", "red");
+                content.addClass("recive");
+            }
+            content.append("[" + date.toLocaleTimeString().toLocaleString() + " " + date.getMilliseconds() + "]" + JSON.stringify(json));
+            content.addClass(json.cmd).addClass(json.type);
+            $("#console").append(content);
+            checkShowSend();
+            checkShowRecive();
+            if ($("#auto_scroll").is(":checked")) {
+                $("#console").scrollTop($("#console")[0].scrollHeight);
+            }
+        }
+    </script>
+    <style>
+        #left_div {
+            font-size: 14px;
+        }
+
+        #left_div div {
+            margin-bottom: 5px;
+        }
+
+        #left_div label {
+            width: 150px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        /*通话视频*/
+        .flashbox {
+            width: 650px;
+            overflow: hidden;
+            margin-top: 14px;
+            margin-left: 4px;
+        }
+
+        .flashbox .flash_l, .flashbox .flash_r {
+            float: left;
+            width: 308px;
+            height: 320px;
+            border: #e7e4e5 solid 1px;
+        }
+
+        .flashbox .flash_r {
+            float: right;
+        }
+
+        .w100 {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+<div id="left_div" style="float:left;width:50%;overflow-y: scroll;">
+    <fieldset>
+        <legend>登录参数</legend>
+        <div>
+            <label>url_3cs:</label>
+            <input type="text" id="url_3cs" value="192.168.177.183:8801/cccs">
+            (连接地址)
+        </div>
+        <div>
+            <label>company_id:</label>
+            <input type="text" id="company_id" value="1">
+            (企业编号)
+        </div>
+        <div>
+            <label>选择登录类型:</label>
+            <label><input type="radio" value="1" name="login_fs" checked class="login_fs">工号方式</label>
+            <label><input type="radio" value="2" name="login_fs" class="login_fs">SIP方式</label>
+        </div>
+        <div id="login_fs1">
+            <label>operator_id:</label>
+            <input type="text" class="w100" id="operator_id" value="9998">
+            <label style="width:70px;">password:</label>
+            <input type="text" class="w100" id="password" value="96e79218965eb72c92a549dd5a330112">
+            <label style="width:auto"><input type="button" value="登录" id="login_op"></label>
+        </div>
+        <div id="login_fs2" style="display: none;">
+            <label>sip_id:</label>
+            <input type="text" class="w100" id="sip_id" value="87146725995600">
+            <label style="width:70px">sip_pwd:</label>
+            <input type="text" class="w100" id="sip_pwd" value="8801bbf8">
+            <label style="width:auto"><input type="button" value="登录" id="login_sip"></label>
+        </div>
+        <div>
+            <label>logintype:</label>
+            <select id="logintype">
+                <option value="0">0(手机)</option>
+                <option value="1">1(SIP话机)</option>
+                <option value="2" selected>2(软话机)</option>
+            </select>
+            (登录方式)
+        </div>
+        <div>
+            <label>auto:</label>
+            <select id="auto">
+                <option value="0" >0(否)</option>
+                <option value="1" selected>1(是)</option>
+            </select>
+            (预测外呼)
+        </div>
+        <div>
+            <label>logingroups:</label>
+            <input type="text" id="logingroups" value="1">
+            (登录到的技能组)
+        </div>
+        <div>
+            <label>clientType:</label>
+            <select id="clientType">
+                <option value="">默认</option>
+                <option value="1">SIPPHONE</option>
+                <option value="2">OCX</option>
+            </select>
+            (话机类型[可选])
+        </div>
+        <div>
+            <label>serverType:</label>
+            <select id="serverType">
+                <option value="">默认</option>
+                <option value="1">CCS</option>
+                <option value="2">CTI</option>
+            </select>
+            (服务类型[可选])
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>功能部分</legend>
+        <div>
+            <label>日志发送:</label>
+            <input type="button" value="开启" id="client_log_open">
+            <input type="button" value="关闭" id="client_log_close">
+        </div>
+        <div>
+            <label>布局样式:</label>
+            <input type="button" value="简版" id="draw">
+            <input type="button" value="全按钮版" id="drawAllIcon">
+        </div>
+        <div>
+            <label>获取可用技能组:</label>
+            <input type="button" value="开启" id="open_availablegroup">
+            <input type="button" value="关闭" id="close_availablegroup">
+        </div>
+        <div>
+            <div>
+                <label>登出:</label>
+                <input type="button" value="登出" id="logout">
+            </div>
+            <div>
+                <label>状态切换:</label>
+                <input type="button" value="示闲" id="idle_but">
+                <input type="button" value="示忙" id="busy_but">
+            </div>
+            <div>
+                <label>外呼:</label>
+                <input type="text" id="callout" value="01080558888">
+                <input type="button" value="外呼" id="callout_but">
+                <input type="button" value="挂机" id="cancelmakecall_but">
+            </div>
+            <label>切换登录状态:</label>
+            <select id="modifyagenttype">
+                <option value="0">普通座席</option>
+                <option value="1">预测外呼</option>
+            </select>
+            技能组
+            <input type="text" id="modifyagenttype_groups" value="1,2" style="width:50px;">
+
+            <div>
+                <label>静音:</label>
+                <input type="button" value="静音" id="mute">
+                <input type="button" value="取消静音" id="unmute">
+            </div>
+
+            <div>
+                <label>咨询:</label>
+                <input type="text" id="consult" value="8888@byd">
+                <input type="button" value="咨询" id="consult_but">
+                <input type="button" value="结束咨询" id="consultbackbut">
+                <input type="button" value="咨询转接" id="shiftbut">
+                <input type="button" value="启用三方" id="tripartitetalkbut">
+            </div>
+            <div>
+                <label>咨询服务:</label>
+                <input type="text" id="consulationservice" value="">
+                <input type="button" value="咨询服务" id="consulationservice_but">
+            </div>
+            <div>
+                <label>转接:</label>
+                <input type="text" id="transfer" value="8888@byd">
+                <input type="button" value="转接" id="transfercall_but">
+            </div>
+            <div>
+                <label>转接服务:</label>
+                <input type="text" id="transferservice" value="">
+                <input type="button" value="转接" id="transferservice_but">
+            </div>
+            <div>
+                <label>获取技能组:</label>
+                <input type="button" value="获取座席所在技能组" id="agentgroups_but">
+            </div>
+            <div>
+                <label>获取座席:</label>
+                <input type="button" value="获取空闲座席" id="idleagents_but">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>班长功能</legend>
+        <div><input type="button" id="monitoragent" value="启用座席监控">
+        </div>
+        <div>
+            <label>强制示闲:</label>
+            <input type="text" id="forceidle" value="8888">
+            <input type="button" value="强制示闲" id="forceidle_but">
+        </div>
+        <div>
+            <label>强制示忙:</label>
+            <input type="text" id="forcebusy" value="8888">
+            <input type="button" value="强制示忙" id="forcebusy_but">
+        </div>
+        <div>
+            <label>监听:</label>
+            <input type="text" id="monitor" value="8888">
+            <input type="button" value="监听" id="monitor_but">
+        </div>
+        <div>
+            <label>拦截:</label>
+            <input type="text" id="agentinterceptcall" value="8888">
+            <input type="button" value="拦截" id="agentinterceptcall_but">
+        </div>
+        <div>
+            <label>强插:</label>
+            <input type="text" id="agentinsert" value="8888">
+            <input type="button" value="强插" id="agentinsert_but">
+        </div>
+        <div>
+            <label>强拆:</label>
+            <input type="text" id="agentbreak" value="8888">
+            <input type="button" value="强拆" id="agentbreak_but">
+        </div>
+    </fieldset>
+</div>
+<div id="right_div" style="float:left;width:45%;">
+    <fieldset style="width:100%;height:98%;">
+        <legend>
+            <label>接收到的消息</label>
+            <label><input type="checkbox" id="auto_scroll" checked>自动滚屏</label>
+            <label><input type="checkbox" id="auto_break" checked>自动换行</label>
+            <label><input type="checkbox" id="filter_ping" checked>过滤ping</label>
+            <label><input type="checkbox" id="show_send" checked>显示发送</label>
+            <label><input type="checkbox" id="show_recive" checked>显示接收</label>
+        </legend>
+        <div id="console" style="overflow:scroll;width:100%;height:98%;font-size:12px;word-break:break-all;"></div>
+    </fieldset>
+</div>
+<div style="clear:both"></div>
+<div id="flashbox" class="flashbox">
+    <div id="flash_l" class="flash_l"></div>
+    <div id="flash_r" class="flash_r"></div>
+    <object id="ecsdkobject"></object>
+</div>
+</body>
+</html>

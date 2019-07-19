@@ -4,7 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const vuxLoader = require('vux-loader')
-const VueBuilder = require('vue-builder-webpack-plugin');
+const VueBuilder = require('./vueBuilderWebpackPlugin');
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -45,6 +45,20 @@ let webpackConfig = {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig
+      },
+      {
+        test: /\.tsx?$/,
+        use: [
+          'babel-loader',
+          {
+            loader: 'ts-loader',
+            options: {
+              // 识别*.vue模块儿追加.tsx后缀
+              appendTsxSuffixTo: [/\.vue$/],
+              // appendTsSuffixTo: [/\.ts\.vue$/]
+            }
+          }
+        ]
       },
       {
         test: /\.js$/,

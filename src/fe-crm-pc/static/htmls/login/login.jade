@@ -1,0 +1,28 @@
+au-flex.login(v-cloak, column)
+    au-item(flex="100% 1 1")
+        h2.login-title
+            span 天机风险运营系统
+        au-form.form(label-position="right", label-width="100", :model="login", :rules="rules", @submit="subLogin")
+            au-form-item(label="用户名", prop="jobNo")
+                au-input(type="text", v-model="login.jobNo", placeholder="请输入邮箱或员工编号", icon="user")
+            au-form-item(label="密码", prop="password")
+                au-input(type="password",v-model="login.password",placeholder="请输入密码", icon="unlock-alt")
+            au-form-item(label="验证码",v-if="isIntranetIp")
+                au-input(type="text",style="width:160px;display:inline-block",v-model="login.msgVerifyCode",placeholder="验证码",icon="unlock-alt")
+                au-button(type="info",style="margin:-4px 0 0 10px", :disabled="isSMSDisabled",@click="getSmsCode") {{codeText}}
+            au-form-item
+                au-button(type="primary", native-type="submit") 登录
+                div(style="display:inline-block;margin-left:15px;")
+                    a(@click="resetPwEvent",style="cursor:pointer;color:rgb(115, 114, 114);font-size:13px;") 忘记密码？
+                p(style="font-size: 12px;color: rgb(138, 109, 59);position: absolute;left: 0;top: 37px;") 温馨提示:请使用谷歌浏览器访问本系统
+    au-modal(title="忘记密码",v-model="isShow")
+        au-form(label-position="right",:model="codeModel",@submit="sendEmail")
+            au-form-item(label="用户名", prop="jobNo",:rules="[{required:true, message:'请输入邮箱或员工编号'}]")
+                au-input(type="text", v-model="codeModel.jobNo", placeholder="请输入邮箱或员工编号", icon="user")
+            au-form-item(label="验证码",prop="verifyCode",:rules="[{required:true, message:'请填写验证码'}]")
+                au-input(type="text", v-model="codeModel.verifyCode", placeholder="请输入验证码",style="width: 150px;display: inline-block;")
+                img(:src="verifyCodeImg",@click="refreshCode",style="width: 90px;height: 35px;float: right;")
+            au-form-item
+                au-button(type="default",@click="isShow = false") 取消
+                au-button(type="primary",native-type="submit",:disabled="isDisabled",v-text="isDisabled?'正在发送..':'确定'")
+
