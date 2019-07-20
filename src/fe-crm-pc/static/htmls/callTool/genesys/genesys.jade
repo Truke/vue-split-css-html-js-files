@@ -1,0 +1,71 @@
+div(style="margin-top:13px;")
+    au-flex(gutter="5")
+        au-item
+            div(class="timer",:class="isBlue ?'bg-blue':''")
+                div.timer-left
+                    span(v-show="inboundPhone") {{inboundPhone}}
+                    span {{onCallStatusTxt}}
+                div.timer-right {{timeStr}}
+        au-item
+            div.tools
+                button(class="tools-btn answer-btn",@click="answerCall",:disabled="answerDisabled")
+        au-item
+            div.tools
+                button(class="tools-btn hangup-btn",@click="hangupCall",:disabled="hangupDisabled || isHangupDisabled")
+        au-item
+            au-input(v-model="callNo",size="small",class="callinput",placeholder="请输入号码")
+        au-item
+            div.tools
+                button(class="tools-btn call-btn",@click="dialCall(0)",:disabled="callDisabled || callEventDisabled")
+        au-item
+            div.flex
+                label(style="position:absolute;font-size:13px;z-index:999;color:#737272;") 静音
+                input(type="checkbox",class="checkbox",v-model="isHold",@change="muteChange",:disabled="muteDisabled")
+        //au-item
+        //    au-button(type="default",size="small",@click="evaluate",:disabled="evaluateDisabled") 满意度评价
+        au-item(style="position:relative")
+
+            .tooltip-wrapper(v-show="timingText > 0")
+                span(style="color:red") {{timingText}}秒
+                |后自动示闲
+
+            au-button(type="default",size="small",@click="ready('-点击')",:disabled="readyDisabled") 示闲
+            au-dropdown(trigger="click")
+                au-button(type="default",size="small",:disabled="notReadyDisabled") 示忙
+                au-menu(v-show="!notReadyDisabled")
+                    au-menu-item(@click="notReady(100)") 小休
+                    au-menu-item(@click="notReady(200)") 培训
+                    au-menu-item(@click="notReady(300)") 调查
+                    au-menu-item(@click="notReady(400)") 会议
+                    au-menu-item(@click="notReady(500)") 辅导
+                    au-menu-item(@click="notReady(600)") 就餐
+
+
+        au-item(offset="1")
+            au-button(type="default",size="small",@click="isShowCheckin = true",:disabled="onlineDisabled") 签入
+            au-button(type="default",size="small",@click="offLine",:disabled="offlineDisabled") 签出
+        au-item
+            span(style="color:red;font-size:11px;") 状态:{{currentStatus}}
+    div(style="display:none")
+        audio(id="audioDing",src="/fe-crm-pc/static/htmls/callTool/genesys/file/ding.wav",preload="auto")
+        audio(id="audioGJ",src="/fe-crm-pc/static/htmls/callTool/genesys/file/gj.wav",preload="auto")
+    au-modal(title="欢迎签入Genesys",v-model="isShowCheckin")
+        au-form(label-with="120",label-position="left")
+            au-form-item(label="工号")
+                au-input(v-model="loginCode")
+            au-form-item(label="分机号")
+                au-input(v-model="place")
+            au-form-item(label="电话前缀")
+                au-input(v-model="phonePrefix")
+            au-form-item
+                au-button(type="primary",@click="login(false)",:disabled="loginDisabled") {{loginDisabled?'正在签入':'确定'}}
+    au-modal(title="提示",v-model="isShowConfirm")
+       div {{logInTip}}
+       div(slot="footer")
+         au-button(type="default",@click="isShowConfirm=false") 取消
+         au-button(type="primary",@click="callInit(false)") 确定
+    au-modal(title="提示",v-model="isShowConfirm2")
+        div 当前输入工号与登录工号不一致，确认是否继续？
+        div(slot="footer")
+            au-button(type="default",@click="isShowConfirm2 = false") 取消
+            au-button(type="primary",@click="isPlaceLogin(false)") 继续

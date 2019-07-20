@@ -3,4 +3,5 @@
 /dist/
 /*.js
 /test/unit/coverage/
+/src/fe-crm-pc/static/scripts/libs/
 

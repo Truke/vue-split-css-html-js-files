@@ -1,0 +1,84 @@
+div
+    au-flex(gutter="5")
+        au-item
+            au-menu
+                au-menu-item(@click="getConversationList") 会话列表
+                    au-menu(style="max-height:600px;overflow: hidden;overflow-y: auto;")
+                        au-menu-item(v-for="item in conversationList",:key="item.phone",:title="item.callOutType==1?'呼入':'呼出'")
+                            au-icon(v-if="item.callOutType==1",icon="phone",style="color:red;margin-right:5px;font-size:22px;")
+                            au-icon(v-else,icon="phone",style="color:#4777E6;margin-right:5px;font-size:22px;")
+                            div {{item.phone}}
+                            div(class="slistP")
+                                p 来电:{{timeago(item.endTime)}}
+                                p 时长:{{item.talkTime}}秒
+        au-item
+            div(class="timer",:class="isBlue ?'bg-blue':''")
+                div.timer-left
+                    span(v-show="callInPhone") {{callInPhone}}
+                    span {{onCallStatusTxt}}
+                div.timer-right {{callTimeText}}
+        //au-item
+        //    div.tools
+        //        button(class="tools-btn answer-btn",@click="answerCallEvent",:disabled="answerDisabled")
+        au-item
+            div.tools
+                button(class="tools-btn hangup-btn",@click="hangupCallEvent",:disabled="hangupDisabled")
+        au-item
+            au-input(v-model="callOutPhone",size="small",class="callinput",placeholder="请输入号码")
+        au-item
+            div.tools
+                button(class="tools-btn call-btn",@click="dialCallEvent",:disabled="callDisabled")
+        au-item
+            div.flex
+                label 静音：
+                input(type="checkbox",class="checkbox",v-model="isHold",@change="muteChangeEvent",:disabled="muteDisabled")
+
+        au-item
+            //au-dropdown(trigger="click")
+            //    au-button(type="default",size="small",:disabled="true") 转接
+            //    au-menu
+            //        au-menu-item 转接到人
+            //        au-menu-item 转接到技能组
+            //        au-menu-item 转接到IVR节点
+
+            au-button(type="default",size="small",@click="doInvestingationEvent",:disabled="evaluateDisabled") 满意度评价
+            span(style="font-size:11px;color:#0b30e8;") {{currentStatus}}
+        au-item
+            au-button(type="default",size="small",@click="readyEvent",:disabled="readyDisabled") {{onlineLoading?'示闲中':'示闲'}}
+            au-dropdown(trigger="click")
+                au-button(type="default",size="small",:disabled="notReadyDisabled") {{pauseLoading?'示忙中':'示忙'}}
+                au-menu(v-show="!notReadyDisabled")
+                    au-menu-item(@click="notReadyEvent('小休')") 小休
+                    au-menu-item(@click="notReadyEvent('培训')") 培训
+                    au-menu-item(@click="notReadyEvent('调查')") 调查
+                    au-menu-item(@click="notReadyEvent('会议')") 会议
+                    au-menu-item(@click="notReadyEvent('辅导')") 辅导
+                    au-menu-item(@click="notReadyEvent('就餐')") 就餐
+
+
+        au-item(offset="1")
+            au-button(type="default",size="small",@click="isShowCheckin = true",:disabled="onlineDisabled") 签入
+            au-button(type="default",size="small",@click="offLineEvent",:disabled="!onlineDisabled") 签出
+        au-item(v-show="onlineDisabled")
+            span(style="font-size:13px;color:red;") 进线热线:{{incomingLine}}
+    au-modal(title="欢迎签入天润",v-model="isShowCheckin",width="410")
+        au-form(label-position="left")
+            au-form-item(label="热线号码：")
+                au-input(v-model="loginModel.hotLine",style="width:200px;")
+            au-form-item(label="座席号：")
+                au-input(v-model="loginModel.cno",style="width:200px;")
+            au-form-item(label="密码：")
+                au-input(v-model="loginModel.pwd",style="width:200px;",type="password")
+            au-form-item(label="绑定电话：")
+                au-input(v-model="loginModel.bindTel",style="width:200px;")
+            au-form-item(label="电话类型：")
+                au-select(v-model="loginModel.bindType",style="width:200px;")
+                    au-option(label="电话号码",value="1")
+                    au-option(label="分机号码",value="2")
+                    au-option(label="软电话",value="3")
+            au-form-item(label="初始状态：")
+                au-select(v-model="loginModel.initStatus",style="width:200px;")
+                    au-option(label="空闲",value="online")
+                    au-option(label="置忙",value="pause")
+            au-form-item
+                au-button(type="primary",@click="loginEvent",:disabled="loginDisabled") {{loginDisabled?'正在签入':'确定'}}

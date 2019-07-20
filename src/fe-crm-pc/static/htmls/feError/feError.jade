@@ -1,0 +1,24 @@
+script(type="text/x-template" id="feError-template")
+    .au-panel(v-cloak)
+        .au-panel-content-inner
+            h1.h1 前端日志
+            span 今日错误数: {{dayCount}}
+            au-table(ref="table",:data="ListData",:loading="loading",:hover="true")
+                au-table-column(label="编号")
+                    template(scope="scope")
+                        span {{(scope.index+1)}}
+                au-table-column(label="浏览器",attr-name="browserVersion")
+                au-table-column(label="日期",attr-name="createTime")
+                au-table-column(label="错误信息",attr-name="errorMsg")
+                au-table-column(label="错误类型",attr-name="errorType")
+                au-table-column(label="操作人",attr-name="jobNo")
+                    template(scope="scope")
+                        | {{scope.data.userName}}({{scope.data.jobNo}})
+                au-table-column(label="源",attr-name="sourceAddress")
+                au-table-column(label="行",attr-name="sourceRowNum")
+                au-table-column(label="列",attr-name="sourceColNum")
+                au-table-column(label="系统名字",attr-name="sysName")
+                au-table-column(label="url",attr-name="url")
+            au-pagination(v-model="query.pageNum",:item-count="pageCount",:page-size="query.pageSize",@change="pageChange",align="right",show-total)
+
+script(src="./feError.js", inline)

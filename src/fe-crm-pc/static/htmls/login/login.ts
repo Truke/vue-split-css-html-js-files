@@ -1,10 +1,9 @@
 declare let Vue, $, SSPA, swal, require, Aurora
-import * as dataJs from '../../scripts/_data.ts'
+import * as dataJs from '../../scripts/_data'
 import RSA from '../../scripts/components/RSA/_rsaEncrypted.js'
-let _stroage=require('../../scripts/components/stroage/_stroage.js')
+let _stroage=require('../../scripts/components/stroage/_stroage')
 
-const login = {
-    template: '#login-template',
+export default SSPA.createComponent('login', {
     data: () => ({
         login: {
             jobNo: '',
@@ -145,10 +144,10 @@ const login = {
                     _stroage.setItem('menuList',JSON.stringify(_.result.menuList) );
                     _stroage.setItem('roleList', JSON.stringify(_.result.roleList));
 
-                    if (_.result.employee.needChangePwd) {
-                        location.href = "#iupms-resetPassWord?token="+_.result.token+'&istoken=1';
-                        return;
-                    }
+                    // if (_.result.employee.needChangePwd) {
+                    //     location.href = "#iupms-resetPassWord?token="+_.result.token+'&istoken=1';
+                    //     return;
+                    // }
                     location.href = "#default";
 
                     // let requestUrl = SSPA.util.getParams('requestUrl');
@@ -170,7 +169,4 @@ const login = {
             this.getIsIntranetIp();
         }
     }
-}
-SSPA.createComponent('login', login)
-// Vue.component('login', login)
-export default login
+})

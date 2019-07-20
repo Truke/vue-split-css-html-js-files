@@ -1,4 +1,4 @@
-import {ajax} from './_util.ts'
+import {ajax} from './_util'
 
 //登陆
 export function getLogin(data) {

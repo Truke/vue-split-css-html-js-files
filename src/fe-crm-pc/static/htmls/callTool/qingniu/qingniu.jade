@@ -1,0 +1,46 @@
+div(style="margin-top:13px;")
+    au-flex(gutter="5")
+        au-item
+            div(class="timer",:class="isBlue ?'bg-blue':''")
+                div.timer-left
+                    span(v-show="callInPhone") {{callInPhone}}
+                    span {{onCallStatusTxt}}
+                div.timer-right {{callTimeText}}
+        //au-item
+        //    div.tools
+        //        button(class="tools-btn answer-btn",:disabled="answerDisabled")
+        au-item
+            div.tools
+                button(class="tools-btn hangup-btn",@click="hangupCallEvent",:disabled="hangupDisabled")
+        au-item
+            au-input(v-model="callOutPhone",size="small",class="callinput",placeholder="请输入号码")
+        au-item
+            div.tools
+                button(class="tools-btn call-btn",@click="dialCallEvent(0)",:disabled="callDisabled")
+        au-item
+            au-button(type="default",size="small",@click="readyEvent",:disabled="readyDisabled") 示闲
+            au-button(type="default",size="small",@click="busyCall",:disabled="notReadyDisabled") 示忙
+            au-button(type="default",size="small",@click="resetEvent",:disabled="offlineDisabled") 重置
+        au-item
+            p(style="font-size:12px;padding-left:10px;") 外显号码：{{loginModel.disNumber}}
+        au-item(offset="1")
+            au-button(type="default",size="small",@click="isShowCheckin=true",:disabled="!offlineDisabled") 签入
+            au-pop-confirm(position="bottom" message="确定要签出吗?",@confirm="callLogout")
+                au-button(type="default",size="small",:disabled="offlineDisabled") 签出
+
+    au-modal(title="欢迎签入青牛",v-model="isShowCheckin",width="")
+        au-form(label-width="120",label-position="left")
+            au-form-item(label="坐席工号")
+                au-input(v-model="loginModel.agentId",placeholder="坐席工号")
+            au-form-item(label="坐席密码")
+                au-input(v-model="loginModel.agentPassword" type="password",placeholder="密码")
+            au-form-item(label="坐席分机号")
+                au-input(v-model="loginModel.agentNumber",placeholder="分机号例如:sip:000000")
+            au-form-item(label="技能组")
+                au-select(v-model="loginModel.skill",placeholder="请选择")
+                    au-option(value="M1H",label="催收M1后排")
+                    au-option(value="M1Z",label="催收M1中排")
+                    au-option(value="M1B",label="备份线路")
+
+            au-form-item
+                au-button(type="primary",@click="loginEvent",:disabled="loginDisabled") {{loginDisabled?'登录中..':'确定'}}

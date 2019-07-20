@@ -1,0 +1,20 @@
+div
+    au-flex(gutter="5",style="margin-top:10px;",v-show="isAutoCall")
+        au-item
+            au-button(type="default",@click="showLoginDialog",:disabled="ronglianCallIsLogin || logining") {{logining?'签入中':'签入'}}
+            au-button(style="margin-left:10px;",type="default",@click="callLogout",:disabled="!ronglianCallIsLogin") 签出
+        au-item
+            div(id="callTools")
+        au-item
+            div(style="font-size:13px;font-weight: bold;",v-if="ronglianCallIsLogin") 外呼工号:{{callLoginForm.operator}}
+    au-modal(v-model="isShowCallView",title="欢迎签入容联",width=500)
+        au-form(:model="callLoginForm",:rules="rules",@submit="callLogin2()")
+            au-form-item(label="座席工号",prop="operator",:rules="[{required: true,message: '请输入座席工号'}]")
+                au-input(placeholder="座席工号",v-model="callLoginForm.operator",maxlength='30')
+            au-form-item(label="座席密码",prop="pwd")
+                au-input(placeholder="座席密码",v-model="callLoginForm.pwd",maxlength='30',type="password")
+            au-form-item(label="企业编号",prop="mid")
+                au-input(placeholder="企业编号",v-model="callLoginForm.mid",maxlength='30')
+            au-form-item
+                au-button(type="primary",native-type="submit",v-show="!logining") 确定
+                au-button(type="primary",v-show="logining",disabled) 登录中...

@@ -1,0 +1,37 @@
+au-app(v-cloak)
+    au-header
+        h1.logo.frame-logo(slot="logo")
+            | 天机风险运营系统
+            span(id="angle-double")
+                au-icon(:icon="isShowMenu?'angle-double-left':'angle-double-right'",style="cursor: pointer;font-size: 18px;width: 20px; position: absolute;top: 22px;left: 180px;")
+        div(slot="content-left",class="iframeTop")
+            div(v-show="tianRunFrameShow")
+                tianRunFrame(ref="tianRunFrame")
+            div(v-show="ronglianComponentShow")
+                ronglianComponent(ref="ronglianComponent")
+            div(v-show="qingniuComponentShow")
+                qingniuComponent(ref="qingniuComponent")
+            div(v-show="genesysComponentShow")
+                genesysComponent(ref="genesysComponent")
+        au-menu(slot="content-right",class="item-title-padding")
+            au-menu-item(style="padding-left:10px")
+                //- img(src="/static/image/portrait.png", style="width:32px;height:32px;margin-right:10px;")
+                | {{userName}}({{jobNo}})
+                au-menu
+                    au-menu-item
+                        a(href="#iupms-modifyPassword") 修改密码
+                    au-menu-item(@click="logout") 退出
+    au-content(class="content-title-padding")
+        div(slot="sidebar")
+            template(v-for="m in roleMenu",v-if="roleMenu")
+                a(class="sysTitle",@click="showCurrentMenuEvent(m)")
+                    | {{m.name}}
+                    au-icon(:icon="m.isShow?'chevron-down':'chevron-right'")
+                au-menu(v-for="menu in m.subMenu",v-show="m.isShow")
+                    au-menu-item(:href="menu.uri", :icon="menu.icon") {{menu.name}}
+                        au-menu(v-if="menu.subMenu && menu.subMenu.length>0")
+                            au-menu-item(v-for="subMenu in menu.subMenu",:href="subMenu.uri") {{subMenu.name}}
+        div(slot="container", ref="container")
+            router-view
+            au-footer
+                | 天机风险运营系统 2017 @copyright

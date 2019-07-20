@@ -1,5 +1,7 @@
 declare let $, Promise, Vue, require, Aurora, SSPA
-let stroageHelper=require('./components/stroage/_stroage.js')
+let stroageHelper=require('./components/stroage/_stroage')
+import {replaceGSLS} from './replace.js'
+
 
 export function ajax(url, data, params={},isShowError=false){
     return new Promise(function (resolve, reject){
@@ -24,6 +26,9 @@ export function ajax(url, data, params={},isShowError=false){
             $.ajax(params)
                 .done((data, status, xhr)=>{
                     //105未登录 106没权限
+                    if(!url.includes("upms/login")){
+                        data = replaceGSLS(data)
+                    }
                     if(data.code == 'G_0007') {
                         if(window['isReLogin']) {
                             return
@@ -88,6 +93,7 @@ export function callAjax(url, data, params = {},isShowError=false,isShowCallErro
 
             $.ajax(params)
                 .done((data, status, xhr) => {
+                    data =  replaceGSLS(data)
                     if (!isShowError) {
                         if (data.statusCode == 2) {
                             reject(data)

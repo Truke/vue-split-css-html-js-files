@@ -3,14 +3,12 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
-const vuxLoader = require('vux-loader')
-const VueBuilder = require('./vueBuilderWebpackPlugin');
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-let webpackConfig = {
+const webpackConfig = {
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'
@@ -23,7 +21,7 @@ let webpackConfig = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.vue', '.json', '.ts'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
@@ -90,31 +88,6 @@ let webpackConfig = {
         }
       }
     ]
-  },
+  }
 }
-
-module.exports = vuxLoader.merge(webpackConfig, {
-  plugins: [
-    'vux-ui',
-    'progress-bar',
-    new VueBuilder({
-      path: 'src'
-    }),
-    {
-      name: 'duplicate-style',
-      options: {
-        cssProcessorOptions : {
-          safe: true,
-          zindex: false,
-          autoprefixer: {
-            add: true,
-            browsers: [
-              'iOS >= 7',
-              'Android >= 4.1'
-            ]
-          }
-        }
-      }
-    }
-  ]
-})
+module.exports = webpackConfig

@@ -198,6 +198,8 @@ const SSPA = function (){
         }
 
         componentOptions[name] = options
+
+        return options
     }
 
     //修正hashchange事件
@@ -309,3 +311,4 @@ const SSPA = function (){
 }()
 
 this.SSPA = SSPA
+module.exports = SSPA

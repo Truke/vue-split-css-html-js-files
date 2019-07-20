@@ -51,7 +51,7 @@ import store from './store'
                 container: 'contentWrapper'
             },
             login: {
-                path: `${STATIC_PATH}/static/htmls/login/login.vue`,
+                path: `${STATIC_PATH}/static/htmls/login/login@{FEPACK.htmlVersion}.html`,
                 container: 'body'
             },
             tianRun: {
