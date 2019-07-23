@@ -32,6 +32,6 @@ au-app(v-cloak)
                         au-menu(v-if="menu.subMenu && menu.subMenu.length>0")
                             au-menu-item(v-for="subMenu in menu.subMenu",:href="subMenu.uri") {{subMenu.name}}
         div(slot="container", ref="container")
-            router-view
+            router-view-children
             au-footer
                 | 天机风险运营系统 2017 @copyright

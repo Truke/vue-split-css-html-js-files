@@ -3,5 +3,6 @@
 /dist/
 /*.js
 /test/unit/coverage/
-/src/fe-crm-pc/static/scripts/libs/
+/src/fe-crm-pc/static/scripts/
+/src/crm-platform/static/scripts/
 

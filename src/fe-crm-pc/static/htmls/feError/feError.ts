@@ -3,8 +3,7 @@ declare let Vue, $, SSPA, require, Aurora
 import * as dataHelper from '../../scripts/_data'
 import * as utilHelper from '../../scripts/_util'
 
-SSPA.createComponent('feError', {
-    template: '#feError-template',
+export default SSPA.createComponent('feError', {
     data: () => ({
         ListData: [],//列表数据
         loading: false,

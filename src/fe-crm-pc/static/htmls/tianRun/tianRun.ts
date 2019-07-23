@@ -1,8 +1,7 @@
 declare let Vue,require,SSPA
 import * as dataJs from '../../scripts/_data'
 import tianrunComponent from '../callTool/tianrun/tianrun'
-SSPA.createComponent('tianRun', {
-    template: '#tianRun-template',
+export default SSPA.createComponent('tianRun', {
     data: () => ({
 
     }),

@@ -26,7 +26,6 @@ class FileGenerator {
   	const pointIndex = fileNamePath.lastIndexOf('.');
   	if (pointIndex !== -1) {
   		fileNamePath = fileNamePath.substr(0, pointIndex);
-  		console.log(fileNamePath);
   	}
 
     const componentName = `${fileSourcePath}/${fileNamePath}.vue`;
@@ -97,7 +96,7 @@ class FileGenerator {
         let jadeContent = fs.readFileSync(`${fileSourcePath}/${fileName}.jade`, 'utf-8')
         if (/^[script|link].*$/gm.test(jadeContent)) {
           let firstSpace = null
-          jadeContent = jadeContent.replace(/^[script|link].*$/gm, '').replace(/^[\r\n]/gm, "").replace(/^\s+/gm,a=>{
+          jadeContent = jadeContent.replace(/^[script|link].*$/gm, '').replace(/^\s+$/gm,'').replace(/^[\r\n]/gm, "").replace(/^\s+/gm,a=>{
             if(firstSpace === null){
               firstSpace = a;
               return ''
@@ -148,17 +147,98 @@ class FileGenerator {
   }
 
 }
+const router = []
+const dict = {
+  'crm-platform':'iupms'
+}
+/**
+ * 文件遍历方法并生成对应的路由文件
+ * @param filePath 需要遍历的文件路径
+ */
+function fileDisplay(filePath){
+  return new Promise((resolve) => {
+    //根据文件路径读取文件，返回文件列表
+    fs.readdir(path.resolve(process.cwd(), filePath),function(err,files){
+      if(err){
+        console.warn(err)
+      }else{
+        //遍历读取到的文件列表
+        files.forEach(function(filename){
+          //获取当前文件的绝对路径
+          var filedir = path.join(filePath,filename);
+          //根据文件路径获取文件信息，返回一个fs.Stats对象
+          fs.stat(filedir,function(eror,stats){
+            if(eror){
+              console.warn('获取文件stats失败');
+            }else{
+              var isFile = stats.isFile();//是文件
+              var isDir = stats.isDirectory();//是文件夹
+              if(isFile){
+                if (filedir.endsWith('.jade')) {
+                  const filedirVue = filedir.replace(/\.jade/g,'.vue')
+                   console.log('\n',filedirVue,'开始-------------------------');
+                   new FileGenerator(filedirVue)
+                   const component = `() => import('@/${filedirVue.split('/').splice(1).join('/')}')`
+                   router.push(
+`{
+    path: "${filename.split('.')[0]}",
+    component: ${component}
+  }`
+                   )
+                   //加入路由列表
+                   if (dict[filedir.split('/')[1]]){
+                     router.push(
+`{
+    path: "${dict[filedir.split('/')[1]]}-${filename.split('.')[0]}",
+    component: ${component}
+  }`
+                     )
+                   }
+                   // 检测目标路径是否正确
+                   const projectRouter = `src/${filedir.split('/')[1]}/router`
+                   const folderExist = fs.existsSync(path.resolve(process.cwd(), projectRouter));
+                   const folderPath = path.resolve(process.cwd(), projectRouter);
+                    
+                   if (!folderExist) {
+                     mkdirp.sync(folderPath);
+                   }
 
+                   let routerContent = 
+`
+export default [
+  ${router.join(',')}
+]`
+                  fs.writeFileSync(`${folderPath}/router.js`, routerContent);
+                }
+              }
+              if(isDir){
+                fileDisplay(filedir);//递归，如果是文件夹，就继续遍历该文件夹下面的文件
+              }
+            }
+
+          })
+        });
+      }
+    });
+  })
+}
+// 主程序
 const splitString = process.env.npm_package_scripts_generate || '';
 const splitStringArray = splitString.split(' ');
 
-if (splitStringArray.length > 1) {
+if (splitStringArray.length > 2) {
   // 拿到用户创建目录
-  const filePath = splitStringArray[2];
-
+  const filePath = splitStringArray[3];
+console.log(splitStringArray)
   // 检测目录
   if (filePath) {
-    new FileGenerator(filePath);
+    if (splitStringArray[2] === '"dir"') {
+      // 以文件夹方式遍历执行 如 npm run generate dir src/fe-crm-pc/static/htmls
+      fileDisplay(filePath.replace(/"/g, ''))
+    } else if (splitStringArray[2] === '"vue"') {
+      // 单文件执行 如npm run generate vue src/fe-crm-pc/static/htmls/login/login.vue
+      new FileGenerator(filePath);
+    }
   } else {
     console.log('请输入文件路径');
   }
